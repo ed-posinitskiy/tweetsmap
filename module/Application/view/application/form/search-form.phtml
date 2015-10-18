@@ -1,0 +1,28 @@
+<?php
+/**
+ * @author ma4eto <eddiespb@gmail.com>
+ * @since  17.10.2015
+ */
+
+use Application\Form\SearchForm;
+
+/** @var SearchForm $form */
+
+$form->setAttribute('action', $this->url('tweets/search'));
+$form->setAttribute('method', 'GET');
+$form->prepare();
+?>
+<?= $this->form()->openTag($form); ?>
+<div class="row no-padding no-margin">
+    <div class="col-xs-6 col-lg-8 no-margin no-padding">
+        <?= $this->formText($form->get(SearchForm::EL_QUERY)); ?>
+    </div>
+    <div class="col-xs-3 col-lg-2 no-margin no-padding">
+        <?= $this->formButton($form->get(SearchForm::EL_SUBMIT)); ?>
+    </div>
+    <div class="col-xs-3 col-lg-2 no-margin no-padding">
+        <a href="<?= $this->url('tweets/history'); ?>"
+           class="btn btn-primary btn-block"><?= $this->translate('History'); ?></a>
+    </div>
+</div>
+<?= $this->form()->closeTag(); ?>

@@ -13,4 +13,31 @@ html, body {
     top:0;
     left:0;
     right:0;
+    margin-bottom: 34px;
+}
+
+.search-form {
+    position: absolute;
+    width: 100%;
+    height: 34px;
+    bottom: 0px;
+    left: 0px;
+    margin: 0;
+    padding: 0;
+}
+
+.search-form .form-control, .search-form .btn {
+    border-radius: 0;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.full-width {
+    width: 100% !important;
 }

@@ -15,7 +15,8 @@ use Zend\Mvc\MvcEvent;
 use Zend\ModuleManager\Feature;
 
 class Module implements Feature\BootstrapListenerInterface, Feature\ConfigProviderInterface,
-                        Feature\AutoloaderProviderInterface, Feature\ViewHelperProviderInterface
+                        Feature\AutoloaderProviderInterface, Feature\ViewHelperProviderInterface,
+                        Feature\FormElementProviderInterface, Feature\ServiceProviderInterface
 {
 
     /**
@@ -28,6 +29,9 @@ class Module implements Feature\BootstrapListenerInterface, Feature\ConfigProvid
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
+        $authListener = $e->getApplication()->getServiceManager()->get('app.auth.listener');
+        $authListener->attach($eventManager);
     }
 
     /**
@@ -66,6 +70,43 @@ class Module implements Feature\BootstrapListenerInterface, Feature\ConfigProvid
             ],
             'factories' => [
                 'Application\\View\\Helper\\GoogleMapsScript' => 'Application\\View\\Factory\\Helper\\GoogleMapsScriptFactory',
+            ]
+        ];
+    }
+
+    /**
+     * Expected to return \Zend\ServiceManager\Config object or array to
+     * seed such an object.
+     *
+     * @return array|\Zend\ServiceManager\Config
+     */
+    public function getFormElementConfig()
+    {
+        return [
+            'invokables' => [
+                'tweets.form.search' => 'Application\\Form\\SearchForm',
+            ]
+        ];
+    }
+
+    /**
+     * Expected to return \Zend\ServiceManager\Config object or array to
+     * seed such an object.
+     *
+     * @return array|\Zend\ServiceManager\Config
+     */
+    public function getServiceConfig()
+    {
+        return [
+            'aliases'   => [
+                'app.auth.storage'            => 'Application\\Auth\\AuthenticationStorage',
+                'app.auth.listener'           => 'Application\\Auth\\AuthenticationListener',
+                'app.service.history-tracker' => 'Application\\Service\\HistoryTracker,'
+            ],
+            'factories' => [
+                'Application\\Auth\\AuthenticationStorage'  => 'Application\\Auth\\Factory\\AuthenticationStorageFactory',
+                'Application\\Auth\\AuthenticationListener' => 'Application\\Auth\\Factory\\AuthenticationListenerFactory',
+                'Application\\Service\\HistoryTracker'      => 'Application\\Service\\Factory\\HistoryTrackerFactory',
             ]
         ];
     }

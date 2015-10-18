@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'doctrine'   => [
+    'doctrine'    => [
         'connection'    => [
             'orm_default' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
@@ -10,7 +10,7 @@ return [
                     'port'          => '3306',
                     'user'          => '${db.user}',
                     'password'      => '$(db.password)',
-                    'dbname'        => 'tweetsmap',
+                    'dbname'        => '${db.name}',
                     'driverOptions' => [
                         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"
                     ]
@@ -31,12 +31,19 @@ return [
             ]
         ]
     ],
-    'map'        => [
+    'google_maps' => [
         'source_url' => 'https://maps.googleapis.com/maps/api/js',
-        'api_key' => null,
+        'api_key'    => '${google.maps.api_key}',
     ],
-    'search_api' => [
-        'radius'    => '50km',
-        'cache_ttl' => 3600
+    'twitter'     => [
+        'api_key'    => '${twitter.api_key}',
+        'api_secret' => '${twitter.api_secret}'
+    ],
+    'search_api'  => [
+        'radius' => '50km',
+        'cache'  => [
+            'ttl'     => 3600,
+            'adapter' => 'mysql'
+        ]
     ]
 ];

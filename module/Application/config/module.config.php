@@ -10,17 +10,48 @@
 return [
     'router'          => [
         'routes' => [
-            'home' => [
-                'type'    => 'Zend\Mvc\Router\Http\Literal',
+            'home'   => [
+                'type'    => 'Literal',
                 'options' => [
                     'route'    => '/',
                     'defaults' => [
-                        'controller' => 'Application\Controller\Index',
+                        'controller' => 'app.controller.index',
                         'action'     => 'index',
                     ],
                 ],
             ],
-
+            'tweets' => [
+                'type'          => 'Segment',
+                'options'       => [
+                    'route'    => '/tweets',
+                    'defaults' => [
+                        'controller' => 'app.controller.tweets',
+                        'action'     => 'index'
+                    ]
+                ],
+                'may_terminate' => true,
+                'child_routes'  => [
+                    'search'  => [
+                        'type'    => 'Segment',
+                        'options' => [
+                            'route'    => '/search',
+                            'defaults' => [
+                                'controller' => 'app.controller.tweets',
+                                'action' => 'search'
+                            ]
+                        ]
+                    ],
+                    'history' => [
+                        'type'    => 'Segment',
+                        'options' => [
+                            'route' => '/history[/]',
+                            'defaults' => [
+                                'action' => 'history'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         ],
     ],
     'service_manager' => [
@@ -44,7 +75,8 @@ return [
     ],
     'controllers'     => [
         'invokables' => [
-            'Application\Controller\Index' => 'Application\Controller\IndexController'
+            'app.controller.index'  => 'Application\\Controller\\IndexController',
+            'app.controller.tweets' => 'Application\\Controller\\TweetsController'
         ],
     ],
     'view_manager'    => [
@@ -63,4 +95,19 @@ return [
             __DIR__ . '/../view',
         ],
     ],
+    'doctrine' => [
+        'driver'        => [
+            'app_entities' => [
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'paths' => [
+                    __DIR__ . '/../src/Application/Entity'
+                ]
+            ],
+            'orm_default'    => [
+                'drivers' => [
+                    'Application\Entity' => 'app_entities'
+                ]
+            ]
+        ],
+    ]
 ];

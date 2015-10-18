@@ -16,6 +16,6 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        return new ViewModel();
+        return $this->forward()->dispatch('app.controller.tweets', ['action' => 'index']);
     }
 }

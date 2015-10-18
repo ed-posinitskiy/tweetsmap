@@ -20,17 +20,28 @@ interface ClientInterface
 {
 
     /**
-     * @param float $version
+     * @param string $version
      *
      * @return void
      */
     public function setVersion($version);
 
     /**
-     * @param SearchParams $params
+     * @param string $endpoint
+     * @param array  $params
+     * @param array  $headers
      *
-     * @return mixed
+     * @return Response
      */
-    public function search(SearchParams $params);
+    public function get($endpoint, array $params = [], array $headers = []);
+
+    /**
+     * @param string $endpoint
+     * @param array  $params
+     * @param array  $headers
+     *
+     * @return Response
+     */
+    public function post($endpoint, array $params = [], array $headers = []);
 
 }
