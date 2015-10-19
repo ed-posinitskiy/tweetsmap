@@ -8,11 +8,16 @@
 
 namespace Application\Controller;
 
+use Application\Entity\Tweet;
 use Application\Form\SearchForm;
 use Application\Service\HistoryTracker;
+use Application\Twitter\Api\Search\SearchApiInterface;
+use Application\Twitter\Api\Search\SearchApiParams;
 use Zend\Form\FormElementManager;
 use Zend\Http\PhpEnvironment\Request;
+use Zend\Http\PhpEnvironment\Response;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -27,7 +32,13 @@ class TweetsController extends AbstractActionController
     public function indexAction()
     {
         $viewModel = new ViewModel();
-        $viewModel->setVariable('form', $this->getSearchForm());
+        /** @var Request $request */
+        $request = $this->getRequest();
+
+        $form = $this->getSearchForm();
+        $form->setData($request->getQuery());
+
+        $viewModel->setVariable('form', $form);
 
         return $viewModel;
     }
@@ -35,28 +46,63 @@ class TweetsController extends AbstractActionController
     public function searchAction()
     {
         /** @var Request $request */
-        $request = $this->getRequest();
-        $query   = $request->getQuery('q');
+        $request  = $this->getRequest();
+        $response = new Response();
 
         if (!$request->isXmlHttpRequest()) {
-            $redirectUrl = $this->url()->fromRoute('tweets');
-            if (!empty($query)) {
-                $redirectUrl .= '?q=' . $query;
-            }
+            $response->setStatusCode(400);
 
-            return $this->redirect()->toUrl($redirectUrl);
+            return $response;
         }
 
-        /** @var HistoryTracker $tracker */
-        $tracker = $this->getServiceLocator()->get('app.service.history-tracker');
-        $tracker->save($query);
+        if (!$request->isPost()) {
+            $response->setStatusCode(400);
 
+            return $response;
+        }
 
+        /** @var SearchApiParams $params */
+        $params = $this->getServiceLocator()->get('twitter.api.search.params');
+        /** @var SearchApiInterface $api */
+        $api = $this->getServiceLocator()->get('twitter.api.search');
+
+        $params    = $params->fromRequest($request->getPost()->toArray());
+        $tweets    = $api->tweets($params);
+        $viewModel = new JsonModel(['tweets' => $this->serializeTweets($tweets)]);
+
+        return $viewModel;
     }
 
     public function historyAction()
     {
+        $history = $this->getHistoryTracker()->findRecent();
 
+        return new ViewModel(['history' => $history]);
+    }
+
+    public function trackAction()
+    {
+        /** @var Request $request */
+        $request  = $this->getRequest();
+        $response = new Response();
+
+        if (!$request->isXmlHttpRequest()) {
+            $response->setStatusCode(400);
+
+            return $response;
+        }
+
+        if (!$query = $request->getPost('q')) {
+            $response->setStatusCode(400);
+
+            return $response;
+        }
+
+        $this->getHistoryTracker()->save($query);
+
+        $response->setStatusCode(202);
+
+        return $response;
     }
 
     /**
@@ -68,5 +114,25 @@ class TweetsController extends AbstractActionController
         $manager = $this->getServiceLocator()->get('FormElementManager');
 
         return $manager->get('tweets.form.search');
+    }
+
+    /**
+     * @return HistoryTracker
+     */
+    private function getHistoryTracker()
+    {
+        return $this->getServiceLocator()->get('app.service.history-tracker');
+    }
+
+    /**
+     * @param array $tweets
+     *
+     * @return array
+     */
+    protected function serializeTweets(array $tweets)
+    {
+        $hydrator = $this->getServiceLocator()->get('HydratorManager')->get('classmethods');
+
+        return array_map([$hydrator, 'extract'], $tweets);
     }
 }

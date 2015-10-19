@@ -7,6 +7,7 @@
  */
 
 namespace Application\Form;
+
 use Zend\Form\Form;
 
 /**
@@ -27,13 +28,16 @@ class SearchForm extends Form
      */
     public function init()
     {
+        $this->setAttribute('id', 'search_form');
+
         $this->add(
             [
                 'name'       => static::EL_QUERY,
                 'type'       => 'Text',
                 'attributes' => [
-                    'class' => 'form-control',
+                    'class'       => 'form-control',
                     'placeholder' => 'City name',
+                    'id'          => 'search_query'
                 ]
             ]
         );
@@ -48,7 +52,7 @@ class SearchForm extends Form
                 ],
                 'attributes' => [
                     'class' => 'btn btn-primary btn-block',
-                    'type' => 'submit',
+                    'type'  => 'submit',
                 ]
             ]
         );

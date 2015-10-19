@@ -37,16 +37,25 @@ return [
                             'route'    => '/search',
                             'defaults' => [
                                 'controller' => 'app.controller.tweets',
-                                'action' => 'search'
+                                'action'     => 'search'
                             ]
                         ]
                     ],
                     'history' => [
                         'type'    => 'Segment',
                         'options' => [
-                            'route' => '/history[/]',
+                            'route'    => '/history[/]',
                             'defaults' => [
                                 'action' => 'history'
+                            ]
+                        ]
+                    ],
+                    'track'   => [
+                        'type'    => 'Segment',
+                        'options' => [
+                            'route'    => '/track[/]',
+                            'defaults' => [
+                                'action' => 'track'
                             ]
                         ]
                     ]
@@ -94,16 +103,19 @@ return [
         'template_path_stack'      => [
             __DIR__ . '/../view',
         ],
+        'strategies'               => [
+            'ViewJsonStrategy',
+        ],
     ],
-    'doctrine' => [
-        'driver'        => [
+    'doctrine'        => [
+        'driver' => [
             'app_entities' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'paths' => [
                     __DIR__ . '/../src/Application/Entity'
                 ]
             ],
-            'orm_default'    => [
+            'orm_default'  => [
                 'drivers' => [
                     'Application\Entity' => 'app_entities'
                 ]

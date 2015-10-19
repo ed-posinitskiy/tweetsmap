@@ -6,12 +6,9 @@
  * @since  18.10.2015
  */
 
-namespace Application\Twitter\Api;
+namespace Application\Twitter\Api\Search;
 
 use Application\Entity\Tweet;
-use Application\Twitter\Api\Search\SearchApi;
-use Application\Twitter\Api\Search\SearchApiInterface;
-use Application\Twitter\Api\Search\SearchApiParams;
 use Doctrine\Common\Persistence\ObjectManager;
 use Zend\Cache\Storage\StorageInterface;
 
@@ -59,15 +56,25 @@ class SearchCacheApi implements SearchApiInterface
      */
     public function tweets(SearchApiParams $params)
     {
-        $hash = implode('.', $params->getParams());
+        $hash = $this->getHashedKey($params);
 
         if ($this->storage->hasItem($hash)) {
             $repository = $this->objectManager->getRepository(Tweet::class);
             $tweets     = $repository->findBy(['id' => $this->storage->getItem($hash)]);
 
+            if (empty($tweets)) {
+                return $this->doTweets($params);
+            }
+
             return $tweets;
         }
 
+        return $this->doTweets($params);
+    }
+
+    protected function doTweets(SearchApiParams $params)
+    {
+        $hash   = $this->getHashedKey($params);
         $ids    = [];
         $tweets = $this->api->tweets($params);
 
@@ -82,6 +89,11 @@ class SearchCacheApi implements SearchApiInterface
         $this->storage->setItem($hash, $ids);
 
         return $tweets;
+    }
+
+    protected function getHashedKey(SearchApiParams $params)
+    {
+        return md5(implode('.', $params->getParams()));
     }
 
 }

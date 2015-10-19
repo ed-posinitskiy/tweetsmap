@@ -3,9 +3,13 @@
  * @author ma4eto <eddiespb@gmail.com>
  * @since  17.10.2015
  */
+
+use Application\Form\SearchForm;
+
+/** @var SearchForm $form */
 ?>
 <div id="google-map"></div>
 <div class="search-form">
     <?= $this->partial('application/form/search-form', ['form' => $form]); ?>
 </div>
-<?= $this->googleMapsScript('map.init'); ?>
+<?= $this->googleMapsScript('app.init'); ?>

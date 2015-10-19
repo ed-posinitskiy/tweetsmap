@@ -55,6 +55,6 @@ abstract class AbstractApi
             }
         }
 
-        return ['Authorization' => $this->authProvider->getToken()->getToken()];
+        return ['Authorization' => 'Bearer ' . $this->authProvider->getToken()->getToken()];
     }
 }

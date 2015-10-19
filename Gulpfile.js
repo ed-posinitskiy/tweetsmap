@@ -86,4 +86,5 @@ gulp.task('watch', function() {
 /**
  * Gulp tasks
  */
-gulp.task('default', ['build-vendor', 'build-custom', 'watch']);
+gulp.task('build', ['build-vendor', 'build-custom']);
+gulp.task('default', ['build', 'watch']);

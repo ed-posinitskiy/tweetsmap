@@ -34,6 +34,26 @@ class SearchApi extends AbstractApi implements SearchApiInterface
     protected $hydrator;
 
     /**
+     * @return HydratorInterface
+     */
+    public function getHydrator()
+    {
+        return $this->hydrator;
+    }
+
+    /**
+     * @param HydratorInterface $hydrator
+     *
+     * @return SearchApi
+     */
+    public function setHydrator(HydratorInterface $hydrator)
+    {
+        $this->hydrator = $hydrator;
+
+        return $this;
+    }
+
+    /**
      * @inheritdoc
      */
     public function tweets(SearchApiParams $params)
@@ -46,14 +66,18 @@ class SearchApi extends AbstractApi implements SearchApiInterface
             throw new RuntimeException('Failed to request tweets by given params');
         }
 
-        if (0 == $response->getBody()->statuses) {
+        $body = $response->getBody();
+        $entries = $body['statuses'];
+        $metaData = $body['search_metadata'];
+
+        if (0 == $metaData['count']) {
             return [];
         }
 
         $list = [];
-        foreach ($response->getBody()->statuses as $message) {
+        foreach ($entries as $entry) {
             $tweet = new Tweet();
-            $this->hydrator->hydrate((array)$message, $tweet);
+            $this->hydrator->hydrate($entry, $tweet);
 
             array_push($list, $tweet);
         }

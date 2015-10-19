@@ -83,13 +83,13 @@ class AppAuthProvider implements AuthProviderInterface
         if ($response->isSuccess()) {
             $tokenData = $response->getBody();
 
-            if ($tokenData->token_type !== 'bearer') {
+            if ($tokenData['token_type'] !== 'bearer') {
                 throw new RuntimeException(
                     sprintf('Token type mismatch. Expected Bearer token, got `%s`', $tokenData->token_type)
                 );
             }
 
-            $this->tokenStorage->set($basic, $tokenData->token);
+            $this->tokenStorage->set($basic, $tokenData['access_token']);
 
             return true;
         }

@@ -43,7 +43,7 @@ class GoogleMapScript extends AbstractHelper
 
     public function __invoke($callback)
     {
-        $params = array_filter(['key' => $this->apiKey, 'callback' => $callback]);
+        $params = array_filter(['key' => $this->apiKey, 'libraries' => 'places', 'callback' => $callback]);
         $uri = $this->source . '?' . http_build_query($params);
 
         $this->getView()->inlineScript()->appendFile($uri, 'text/javascript', ['async', 'defer']);

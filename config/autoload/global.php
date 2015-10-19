@@ -36,14 +36,26 @@ return [
         'api_key'    => '${google.maps.api_key}',
     ],
     'twitter'     => [
-        'api_key'    => '${twitter.api_key}',
-        'api_secret' => '${twitter.api_secret}'
+        'api_endpoint' => 'https://api.twitter.com',
+        'api_version'  => '1.1',
+        'api_key'      => '${twitter.api_key}',
+        'api_secret'   => '${twitter.api_secret}'
     ],
     'search_api'  => [
         'radius' => '50km',
         'cache'  => [
-            'ttl'     => 3600,
-            'adapter' => 'mysql'
+            'ttl' => 3600,
+            'adapter' => [
+                'name'    => 'filesystem',
+                'options' => [
+                    'cache_dir' => 'data/cache/search-api-cache'
+                ],
+            ],
+            'plugins' => [
+                'exceptionhandler'     => ['throw_exceptions' => false],
+                ['name' => 'serializer'],
+                'clearexpiredbyfactor' => ['clearing_factor' => 5]
+            ],
         ]
     ]
 ];

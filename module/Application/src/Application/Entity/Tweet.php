@@ -48,6 +48,20 @@ class Tweet
     protected $text;
 
     /**
+     * @Mapping\Column(type="float", scale=8, precision=11)
+     *
+     * @var string
+     */
+    protected $len;
+
+    /**
+     * @Mapping\Column(type="float", scale=8, precision=11)
+     *
+     * @var string
+     */
+    protected $lon;
+
+    /**
      * @Mapping\Column(type="datetime")
      *
      * @var DateTime
@@ -103,6 +117,46 @@ class Tweet
     public function setText($text)
     {
         $this->text = $text;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLen()
+    {
+        return $this->len;
+    }
+
+    /**
+     * @param float $len
+     *
+     * @return Tweet
+     */
+    public function setLen($len)
+    {
+        $this->len = $len;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLon()
+    {
+        return $this->lon;
+    }
+
+    /**
+     * @param float $lon
+     *
+     * @return Tweet
+     */
+    public function setLon($lon)
+    {
+        $this->lon = $lon;
 
         return $this;
     }

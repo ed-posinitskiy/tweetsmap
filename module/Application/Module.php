@@ -101,12 +101,26 @@ class Module implements Feature\BootstrapListenerInterface, Feature\ConfigProvid
             'aliases'   => [
                 'app.auth.storage'            => 'Application\\Auth\\AuthenticationStorage',
                 'app.auth.listener'           => 'Application\\Auth\\AuthenticationListener',
-                'app.service.history-tracker' => 'Application\\Service\\HistoryTracker,'
+                'app.service.history-tracker' => 'Application\\Service\\HistoryTracker',
+                'twitter.client'              => 'Application\\Twitter\\Client',
+                'twitter.auth.token-storage'  => 'Application\\Twitter\\Auth\\DoctrineORMTokenStorage',
+                'twitter.auth.auth-provider'  => 'Application\\Twitter\\Auth\\AppAuthProvider',
+                'twitter.api.search'          => 'Application\\Twitter\\Api\\Search\\SearchCacheApi',
+                'twitter.api.search.params'   => 'Application\\Twitter\\Api\\Search\\SearchApiParams',
             ],
             'factories' => [
-                'Application\\Auth\\AuthenticationStorage'  => 'Application\\Auth\\Factory\\AuthenticationStorageFactory',
-                'Application\\Auth\\AuthenticationListener' => 'Application\\Auth\\Factory\\AuthenticationListenerFactory',
-                'Application\\Service\\HistoryTracker'      => 'Application\\Service\\Factory\\HistoryTrackerFactory',
+                'Application\\Auth\\AuthenticationStorage'            => 'Application\\Auth\\Factory\\AuthenticationStorageFactory',
+                'Application\\Auth\\AuthenticationListener'           => 'Application\\Auth\\Factory\\AuthenticationListenerFactory',
+                'Application\\Service\\HistoryTracker'                => 'Application\\Service\\Factory\\HistoryTrackerFactory',
+                'Application\\Twitter\\Client'                        => 'Application\\Twitter\\Factory\\ClientFactory',
+                'Application\\Twitter\\Auth\\DoctrineORMTokenStorage' => 'Application\\Twitter\\Factory\\Auth\\DoctrineORMTokenStorageFactory',
+                'Application\\Twitter\\Auth\\AppAuthProvider'         => 'Application\\Twitter\\Factory\\Auth\\AppAuthProviderFactory',
+                'Application\\Twitter\\Api\\Search\\SearchApi'        => 'Application\\Twitter\\Factory\\Api\\SearchApiFactory',
+                'Application\\Twitter\\Api\\Search\\SearchCacheApi'   => 'Application\\Twitter\\Factory\\Api\\SearchCacheApiFactory',
+                'Application\\Twitter\\Api\\Search\\SearchApiParams'  => 'Application\\Twitter\\Factory\\Api\\SearchApiParamsFactory',
+            ],
+            'shared'    => [
+                'Application\\Twitter\\Api\\Search\\SearchApiParams' => false
             ]
         ];
     }

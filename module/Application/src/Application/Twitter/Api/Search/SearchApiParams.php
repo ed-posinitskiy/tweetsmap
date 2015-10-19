@@ -7,6 +7,7 @@
  */
 
 namespace Application\Twitter\Api\Search;
+use InvalidArgumentException;
 
 /**
  * Class SearchApiParams
@@ -28,15 +29,23 @@ class SearchApiParams
     protected $hashes = [];
 
     /**
+     * @var array
+     */
+    protected $defaults
+        = [
+            'radius' => '50km'
+        ];
+
+    /**
      * @param $lat
-     * @param $long
+     * @param $lon
      * @param $radius
      *
      * @return SearchApiParams
      */
-    public function setGeocode($lat, $long, $radius)
+    public function setGeocode($lat, $lon, $radius)
     {
-        $this->geocode = [$lat, $long, $radius];
+        $this->geocode = [$lat, $lon, $radius];
 
         return $this;
     }
@@ -85,10 +94,14 @@ class SearchApiParams
         $out     = [];
 
         foreach ($this as $attr => $value) {
+            if ($attr === 'defaults') {
+                continue;
+            }
+
             $method = $attr . $postfix;
             $value  = method_exists($this, $method) ? $this->$method() : $value;
 
-            if(empty($value)) {
+            if (empty($value)) {
                 continue;
             }
 
@@ -96,6 +109,39 @@ class SearchApiParams
         }
 
         return $out;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setDefaults($key, $value)
+    {
+        if (!array_key_exists($key, $this->defaults)) {
+            throw new InvalidArgumentException(
+                sprintf('Parameter %s is not supported', $key)
+            );
+        }
+
+        $this->defaults[$key] = $value;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return SearchApiParams
+     */
+    public function fromRequest(array $params)
+    {
+        $lat    = isset($params['lat']) ? $params['lat'] : null;
+        $lon    = isset($params['lon']) ? $params['lon'] : null;
+        $radius = isset($params['radius']) ? $params['radius'] : $this->defaults['radius'];
+
+        if (isset($lat) && isset($lon)) {
+            $this->setGeocode($lat, $lon, $radius);
+        }
+
+        return $this;
     }
 
 }
