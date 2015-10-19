@@ -56,7 +56,7 @@ class SearchApi extends AbstractApi implements SearchApiInterface
     /**
      * @inheritdoc
      */
-    public function tweets(SearchApiParams $params)
+    public function tweets(SearchApiParams $params, $hydrateAs = self::HYDRATE_OBJECT)
     {
         $headers = $this->getAuthHeader();
 
@@ -66,8 +66,8 @@ class SearchApi extends AbstractApi implements SearchApiInterface
             throw new RuntimeException('Failed to request tweets by given params');
         }
 
-        $body = $response->getBody();
-        $entries = $body['statuses'];
+        $body     = $response->getBody();
+        $entries  = $body['statuses'];
         $metaData = $body['search_metadata'];
 
         if (0 == $metaData['count']) {
@@ -82,6 +82,30 @@ class SearchApi extends AbstractApi implements SearchApiInterface
             array_push($list, $tweet);
         }
 
-        return $list;
+        return $this->hydrateTweetsResponse($list, $hydrateAs);
+    }
+
+    /**
+     * @param Tweet[]  $tweets
+     * @param string $hydrateAs
+     *
+     * @return array
+     */
+    public function hydrateTweetsResponse(array $tweets, $hydrateAs)
+    {
+        $hydrateAs = ($hydrateAs === self::HYDRATE_OBJECT) ? self::HYDRATE_OBJECT : self::HYDRATE_ARRAY;
+
+        switch ($hydrateAs) {
+            case self::HYDRATE_OBJECT:
+                return $tweets;
+                break;
+            default:
+                if (!$this->hydrator) {
+                    throw new RuntimeException('Hydrator must be defined to use hydrate as array property');
+                }
+
+                return array_map([$this->hydrator, 'extract'], $tweets);
+                break;
+        }
     }
 }

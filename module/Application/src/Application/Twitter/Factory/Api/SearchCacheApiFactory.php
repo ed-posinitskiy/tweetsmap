@@ -28,6 +28,15 @@ class SearchCacheApiFactory
         $config = $container->get('Config');
         $config = isset($config['search_api']) && is_array($config['search_api']) ? $config['search_api'] : [];
 
+        $cacheEnabled = isset($config['cache']['enabled']) && $config['cache']['enabled'] === true;
+
+        /** @var SearchApi $searchApi */
+        $searchApi = $container->get('Application\\Twitter\\Api\\Search\\SearchApi');
+
+        if (!$cacheEnabled) {
+            return $searchApi;
+        }
+
         $ttl = $config['cache']['ttl'];
         unset($config['cache']['ttl']);
 
@@ -36,8 +45,6 @@ class SearchCacheApiFactory
 
         $cache = StorageFactory::factory($cacheConfig);
 
-        /** @var SearchApi $searchApi */
-        $searchApi = $container->get('Application\\Twitter\\Api\\Search\\SearchApi');
         /** @var EntityManager $em */
         $em = $container->get('Doctrine\\ORM\\EntityManager');
 

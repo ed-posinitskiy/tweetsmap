@@ -5,6 +5,10 @@ html, body {
     padding: 0;
 }
 
+img[src*="pbs.twimg.com"], img[src*="noavatar.png"] {
+    border-radius: 24px;
+}
+
 #google-map {
     display: block;
     position:absolute;

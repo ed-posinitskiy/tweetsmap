@@ -54,7 +54,7 @@ class SearchCacheApi implements SearchApiInterface
     /**
      * @inheritDoc
      */
-    public function tweets(SearchApiParams $params)
+    public function tweets(SearchApiParams $params, $hydrateAs = self::HYDRATE_OBJECT)
     {
         $hash = $this->getHashedKey($params);
 
@@ -63,20 +63,24 @@ class SearchCacheApi implements SearchApiInterface
             $tweets     = $repository->findBy(['id' => $this->storage->getItem($hash)]);
 
             if (empty($tweets)) {
-                return $this->doTweets($params);
+                return $this->doTweets($params, $hydrateAs);
+            }
+
+            if ($hydrateAs === self::HYDRATE_ARRAY) {
+                $tweets = $this->api->hydrateTweetsResponse($tweets, self::HYDRATE_ARRAY);
             }
 
             return $tweets;
         }
 
-        return $this->doTweets($params);
+        return $this->doTweets($params, $hydrateAs);
     }
 
-    protected function doTweets(SearchApiParams $params)
+    protected function doTweets(SearchApiParams $params, $hydrateAs)
     {
         $hash   = $this->getHashedKey($params);
         $ids    = [];
-        $tweets = $this->api->tweets($params);
+        $tweets = $this->api->tweets($params, self::HYDRATE_OBJECT);
 
         foreach ($tweets as $tweet) {
             $this->objectManager->persist($tweet);
@@ -88,7 +92,7 @@ class SearchCacheApi implements SearchApiInterface
 
         $this->storage->setItem($hash, $ids);
 
-        return $tweets;
+        return $this->api->hydrateTweetsResponse($tweets, $hydrateAs);
     }
 
     protected function getHashedKey(SearchApiParams $params)

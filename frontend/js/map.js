@@ -2,7 +2,7 @@ var map = (function () {
     var _map = null,
         _mapId = 'google-map',
         _center = {lat: 13.7308, lng: 100.521},
-        _placesService = null;
+        _placesService;
 
     var events = {
         target: $('body'),
@@ -13,10 +13,13 @@ var map = (function () {
 
     return {
         events: events,
-        getMap: function() {
+        getMap: function () {
             return _map;
         },
-        init: function() {
+        getGeocoder: function() {
+            return _geocoder;
+        },
+        init: function () {
             _map = new google.maps.Map(document.getElementById(_mapId), {
                 center: _center,
                 zoom: 10
@@ -24,12 +27,12 @@ var map = (function () {
 
             _placesService = new google.maps.places.PlacesService(_map);
         },
-        search: function(query) {
+        search: function (query) {
             var request = {
                 query: query,
                 types: '(cities)'
             };
-            _placesService.textSearch(request, function(results, status) {
+            _placesService.textSearch(request, function (results, status) {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
                     if (results.length > 0) {
                         var place = results[0];
@@ -43,6 +46,30 @@ var map = (function () {
 
                 events.target.trigger(events.searchError, request);
             });
+        },
+        createMarker: function (location, image, label) {
+            var infowindow, marker;
+
+            if (label) {
+                infowindow = new google.maps.InfoWindow({
+                    content: label
+                });
+            }
+
+            marker = new google.maps.Marker({
+                position: location,
+                map: _map,
+                label: '',
+                icon: {
+                    url: image
+                }
+            });
+
+            marker.addListener('click', function() {
+                infowindow.open(_map, marker);
+            });
+
+            return marker;
         }
     };
 })();

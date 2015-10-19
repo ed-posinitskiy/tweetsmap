@@ -67,8 +67,8 @@ class TweetsController extends AbstractActionController
         $api = $this->getServiceLocator()->get('twitter.api.search');
 
         $params    = $params->fromRequest($request->getPost()->toArray());
-        $tweets    = $api->tweets($params);
-        $viewModel = new JsonModel(['tweets' => $this->serializeTweets($tweets)]);
+        $tweets    = $api->tweets($params, SearchApiInterface::HYDRATE_ARRAY);
+        $viewModel = new JsonModel(['tweets' => $tweets]);
 
         return $viewModel;
     }
@@ -122,17 +122,5 @@ class TweetsController extends AbstractActionController
     private function getHistoryTracker()
     {
         return $this->getServiceLocator()->get('app.service.history-tracker');
-    }
-
-    /**
-     * @param array $tweets
-     *
-     * @return array
-     */
-    protected function serializeTweets(array $tweets)
-    {
-        $hydrator = $this->getServiceLocator()->get('HydratorManager')->get('classmethods');
-
-        return array_map([$hydrator, 'extract'], $tweets);
     }
 }

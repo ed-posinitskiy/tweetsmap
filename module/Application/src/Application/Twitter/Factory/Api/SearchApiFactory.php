@@ -8,6 +8,7 @@
 
 namespace Application\Twitter\Factory\Api;
 
+use Application\Hydrator\Strategy\DateTimeStrategy;
 use Application\Twitter\Api\Search\SearchApi;
 use Application\Twitter\Api\Search\TweetHydrator;
 use Application\Twitter\Auth\AuthProviderInterface;
@@ -30,8 +31,11 @@ class SearchApiFactory
         /** @var AuthProviderInterface $authProvider */
         $authProvider = $container->get('twitter.auth.auth-provider');
 
+        $hydrator = new TweetHydrator();
+        $hydrator->addStrategy('date', new DateTimeStrategy('c'));
+
         $api = new SearchApi($client, $authProvider);
-        $api->setHydrator(new TweetHydrator());
+        $api->setHydrator($hydrator);
 
         return $api;
     }

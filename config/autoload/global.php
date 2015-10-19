@@ -6,11 +6,11 @@ return [
             'orm_default' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
                 'params'      => [
-                    'host'          => '${db.host}',
+                    'host'          => '',
                     'port'          => '3306',
-                    'user'          => '${db.user}',
-                    'password'      => '$(db.password)',
-                    'dbname'        => '${db.name}',
+                    'user'          => '',
+                    'password'      => '',
+                    'dbname'        => '',
                     'driverOptions' => [
                         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"
                     ]
@@ -38,13 +38,14 @@ return [
     'twitter'     => [
         'api_endpoint' => 'https://api.twitter.com',
         'api_version'  => '1.1',
-        'api_key'      => '${twitter.api_key}',
-        'api_secret'   => '${twitter.api_secret}'
+        'api_key'      => null,
+        'api_secret'   => null
     ],
     'search_api'  => [
         'radius' => '50km',
         'cache'  => [
-            'ttl' => 3600,
+            'enabled' => true,
+            'ttl'     => 3600,
             'adapter' => [
                 'name'    => 'filesystem',
                 'options' => [

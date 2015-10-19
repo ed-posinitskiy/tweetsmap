@@ -8,8 +8,6 @@
 
 namespace Application\Twitter\Api\Search;
 
-use Application\Entity\Tweet;
-
 /**
  * Interface SearchApiInterface
  *
@@ -20,10 +18,14 @@ use Application\Entity\Tweet;
 interface SearchApiInterface
 {
 
+    const HYDRATE_ARRAY  = 'array';
+    const HYDRATE_OBJECT = 'object';
+
     /**
      * @param SearchApiParams $params
+     * @param string          $hydrateAs
      *
-     * @return Tweet[]
+     * @return array
      */
-    public function tweets(SearchApiParams $params);
+    public function tweets(SearchApiParams $params, $hydrateAs = self::HYDRATE_OBJECT);
 }

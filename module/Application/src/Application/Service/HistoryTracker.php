@@ -80,6 +80,6 @@ class HistoryTracker
         $identity = $this->authStorage->getIdentity();
         $repo     = $this->objectManager->getRepository(SearchHistory::class);
 
-        return $repo->findBy(['identity' => $identity], ['date' => 'DESC'], $limit);
+        return $repo->findRecentByIdentity($identity, $limit);
     }
 }

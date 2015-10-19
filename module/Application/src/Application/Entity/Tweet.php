@@ -52,7 +52,7 @@ class Tweet
      *
      * @var string
      */
-    protected $len;
+    protected $lat;
 
     /**
      * @Mapping\Column(type="float", scale=8, precision=11)
@@ -124,19 +124,19 @@ class Tweet
     /**
      * @return mixed
      */
-    public function getLen()
+    public function getLat()
     {
-        return $this->len;
+        return $this->lat;
     }
 
     /**
-     * @param float $len
+     * @param float $lat
      *
      * @return Tweet
      */
-    public function setLen($len)
+    public function setLat($lat)
     {
-        $this->len = $len;
+        $this->lat = $lat;
 
         return $this;
     }

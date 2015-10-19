@@ -1,0 +1,26 @@
+<?php
+/**
+ * @author ma4eto <eddiespb@gmail.com>
+ * @since  19.10.2015
+ */
+
+use Application\Entity\SearchHistory;
+
+/** @var SearchHistory[] $history */
+?>
+<?php if (empty($history)) : ?>
+    <div class="alert alert-warning"><?= $this->translate('History is empty'); ?></div>
+<?php else : ?>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <a href="<?= $this->url('home'); ?>" class="btn-block">
+                <b><span class="glyphicon glyphicon-chevron-left"></span> BACK TO THE TWEETS!</b>
+            </a>
+        </li>
+        <?php foreach ($history as $item) : ?>
+            <li class="list-group-item">
+                <a href="<?= $this->url('home'); ?>?q=<?= $item->getKeyword(); ?>" class="btn-block"><?= $item->getKeyword(); ?></a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>

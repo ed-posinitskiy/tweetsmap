@@ -19,7 +19,7 @@ use InvalidArgumentException;
  * @author  ma4eto <eddiespb@gmail.com>
  * @since   18.10.2015
  *
- * @Mapping\Entity
+ * @Mapping\Entity(repositoryClass="Application\Repository\SearchHistoryRepository")
  * @Mapping\Table(name="search_history")
  */
 class SearchHistory
