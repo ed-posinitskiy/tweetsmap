@@ -9,6 +9,7 @@ use Application\Form\SearchForm;
 /** @var SearchForm $form */
 ?>
 <div id="google-map"></div>
+<div class="search-title text-primary hidden">Tweets about <span></span></div>
 <div class="search-form">
     <?= $this->partial('application/form/search-form', ['form' => $form]); ?>
 </div>

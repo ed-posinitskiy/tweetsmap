@@ -34,6 +34,15 @@ img[src*="pbs.twimg.com"], img[src*="noavatar.png"] {
     border-radius: 0;
 }
 
+.search-title {
+    display: block;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    font-size: 20px;
+    top: 10px;
+}
+
 .no-margin {
     margin: 0 !important;
 }
@@ -44,4 +53,8 @@ img[src*="pbs.twimg.com"], img[src*="noavatar.png"] {
 
 .full-width {
     width: 100% !important;
+}
+
+.hidden {
+    display: none;
 }

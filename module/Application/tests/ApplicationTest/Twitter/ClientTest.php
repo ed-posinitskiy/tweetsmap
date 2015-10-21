@@ -59,8 +59,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertTrue($response->isSuccess());
-        $this->assertObjectHasAttribute('test', $response->getBody());
-        $this->assertEquals('test', $response->getBody()->test);
+        $this->assertArrayHasKey('test', $response->getBody());
+        $this->assertEquals('test', $response->getBody()['test']);
     }
 
     /**
@@ -82,8 +82,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertTrue($response->isSuccess());
-        $this->assertObjectHasAttribute('access_token', $response->getBody());
-        $this->assertEquals('someAccessToken', $response->getBody()->access_token);
+        $this->assertArrayHasKey('access_token', $response->getBody());
+        $this->assertEquals('someAccessToken', $response->getBody()['access_token']);
     }
 
     /**

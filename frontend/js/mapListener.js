@@ -68,11 +68,20 @@ var mapListener = (function () {
         });
     };
 
+    var _showSearchTitle = function(place) {
+        var $continer = $(".search-title"),
+            $placeholder = $continer.find('span');
+
+        $continer.removeClass('hidden');
+        $placeholder.html(place.name);
+    };
+
     return {
         onFound: function (e, place) {
             _moveToRequestedPlace(place.geometry.location);
             _requestTweets(place.geometry.location);
             _trackRequest(place);
+            _showSearchTitle(place);
         }
     };
 })();
