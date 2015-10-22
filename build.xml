@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Tweetsmap" default="build">
+    <property file="././build.properties"/>
+
+    <target name="clean">
+        <delete dir="./build/"/>
+    </target>
+
+    <target name="prepare" depends="clean">
+        <mkdir dir="./build"/>
+        <echo>Build directory created</echo>
+    </target>
+
+    <target name="install-composer">
+        <exec command="composer install --no-dev" passthru="true"/>
+        <echo>Installed composer</echo>
+    </target>
+
+    <target name="install-bower">
+        <exec command="bower install" passthru="true"/>
+        <echo>Installed bower</echo>
+    </target>
+
+    <target name="build-assets">
+        <exec command="gulp build" passthru="true"/>
+        <echo>Assets built</echo>
+    </target>
+
+    <target name="copy-sources">
+        <copy todir="./build" overwrite="true">
+            <fileset dir=".">
+                <include name="config/"/>
+                <include name="data/"/>
+                <include name="module/"/>
+                <include name="public/"/>
+                <include name="vendor/"/>
+                <include name="init_autoloader.php"/>
+            </fileset>
+        </copy>
+        <echo>Sources copied</echo>
+    </target>
+
+    <target name="apply-config">
+        <copy file='./build/config/autoload/local.php.dist' tofile="./build/config/autoload/local.php" overwrite="true" verbose="true">
+            <filterchain>
+                <replacetokens begintoken="{{" endtoken="}}">
+                    <token key="db.host" value="${db.host}"/>
+                    <token key="db.name" value="${db.name}"/>
+                    <token key="db.user" value="${db.user}"/>
+                    <token key="db.password" value="${db.password}"/>
+                    <token key="twitter.api_key" value="${twitter.api_key}"/>
+                    <token key="twitter.api_secret" value="${twitter.api_secret}"/>
+                    <token key="google.maps.api_key" value="${google.maps.api_key}"/>
+                </replacetokens>
+            </filterchain>
+        </copy>
+        <echo>Config applied</echo>
+    </target>
+
+    <target name="remove-odd">
+        <delete>
+            <fileset dir="./build">
+                <include name="config/**/*.dist"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="apply-rights">
+        <exec command="chmod -R data/" dir="build" passthru="true"/>
+        <echo>Rights applied</echo>
+    </target>
+
+    <target name="prepare-sources" depends="install-composer, install-bower, build-assets, copy-sources, apply-config, remove-odd, apply-rights">
+        <echo>Sources prepared</echo>
+    </target>
+
+    <target name="build" depends="prepare, prepare-sources"></target>
+</project>

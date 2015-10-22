@@ -21,7 +21,7 @@ return [
             'orm_default' => [
                 'metadata_cache'   => 'filesystem',
                 'query_cache'      => 'filesystem',
-                'generate_proxies' => false,
+                'generate_proxies' => true,
                 'proxy_dir'        => __DIR__ . '/../../data/generated/doctrine-module-proxy'
             ]
         ],
@@ -58,5 +58,9 @@ return [
                 'clearexpiredbyfactor' => ['clearing_factor' => 5]
             ],
         ]
+    ],
+    'http_client_defaults' => [
+        'sslverifypeer' => true,
+        'sslcapath' => '/etc/ssl/certs'
     ]
 ];

@@ -24,8 +24,8 @@ class ClientFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->get('Config');
-        $config = isset($config['twitter']) && is_array($config['twitter']) ? $config['twitter'] : [];
+        $baseConfig = $container->get('Config');
+        $config     = isset($baseConfig['twitter']) && is_array($baseConfig['twitter']) ? $baseConfig['twitter'] : [];
 
         if (empty($config['api_endpoint'])) {
             throw new RuntimeException(
@@ -36,7 +36,12 @@ class ClientFactory
         $endpoint = $config['api_endpoint'];
         $version  = isset($config['api_version']) ? $config['api_version'] : null;
 
-        $httpClient = new HttpClient();
+        $httpConfig = [];
+        if (isset($baseConfig['http_client_defaults']) && is_array($baseConfig['http_client_defaults'])) {
+            $httpConfig = $baseConfig['http_client_defaults'];
+        }
+
+        $httpClient = new HttpClient(null, $httpConfig);
         $client     = new Client($httpClient, $endpoint);
 
         if ($version) {
